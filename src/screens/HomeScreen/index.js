@@ -32,8 +32,6 @@ function checkFormat(value) {
 export default function HomeScreen({ navigation }) {
     const [users, setUsers] = useState([]);
     const [username, setUsername] = useState('');
-    
-      // componentdidMount ve componentDidUpdate'e benzer bir şekilde:
 
     const getInfo = async () => {
         await firebase.initializeApp(credentials, config);
@@ -53,7 +51,9 @@ export default function HomeScreen({ navigation }) {
         .set({
           name: tempArray,
         })
-        .then(() => navigation.navigate("Lobby"));
+        .then(() => navigation.navigate("Lobby", {
+            username
+        }));
     }
 
     return (

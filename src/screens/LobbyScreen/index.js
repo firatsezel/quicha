@@ -7,25 +7,11 @@ import database from '@react-native-firebase/database';
 import { ContactBox } from '../../components/index';
 import styles from './styles';
 
-const credentials = {
-    clientId: '708721798217-q21i9fuonigsimj0jipe7noof9qmpdov.apps.googleusercontent.com',
-    appId: '1:708721798217:ios:0ac6e691eb7c4f6e82639',
-    apiKey: 'AIzaSyCitQXz93CbQRJzvqKHnfkPtpXufJFM7TY',
-    databaseURL: 'https://quicha-25dc8.firebaseio.com',
-    storageBucket: 'quicha-25dc8.appspot.com',
-    messagingSenderId: '708721798217',
-    projectId: 'quicha-25dc8',
-};
 
-const config = {
-  name: 'quicha',
-};
-
-export default function LobbyScreen({ navigation }) {
+export default function LobbyScreen({ route, navigation }) {
     const [users, setUsers] = useState([]);
 
     const getInfo = async () => {
-        await firebase.initializeApp(credentials, config);
         firebase.database().ref('/users').once('value')
         .then(snapshot => {
             setUsers(snapshot.val().name);
@@ -34,12 +20,27 @@ export default function LobbyScreen({ navigation }) {
 
     useEffect(() => {getInfo()}, []);
 
-    userList = () => {
-        console.log(users);
-        return users.map((data) => ContactBox(data, () => {
-            navigation.navigate('Chat');
+    const writedb = (person) => {
+        let tempArray = [];
+        const userName = route.params.username;
+        const roomName = `${person}${route.params.username}`;
+        firebase.database()
+        .ref(`/users/${userName}/${roomName}`)
+        .set({
+          roomName,
+          conversation: tempArray,
+        })
+        .then(() => navigation.navigate('Chat', {
+            roomName,
+            person,
+            userName,
         }));
-    
+    }
+
+    userList = () => {
+        return users.map((data) => ContactBox(data, () => {
+            writedb(data);
+        }));
     }
 
     return (
