@@ -24,6 +24,14 @@ const styles = {
     color: '#FFF',
     fontSize: 14,
   },
+  locationStyle: {
+    marginTop: 5,
+    marginLeft: 5,
+    marginRight: 5,
+    color: '#FFF',
+    fontSize: 14,
+    textDecorationLine: 'underline',
+  },
   rightTalkBubbleTriangle: {
     position: 'absolute',
     right: -7,

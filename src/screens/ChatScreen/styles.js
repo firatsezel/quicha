@@ -12,6 +12,10 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: '#eee',
   },
+  image: {
+    width: 24,
+    height: 24,
+  },
   send: {
     alignSelf: 'center',
     color: 'white',
