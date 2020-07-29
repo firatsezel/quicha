@@ -58,15 +58,15 @@ export default function ChatScreen({ route, navigation }) {
   }
 
   const renderList = () =>  {
-    // return (
+    const userName = route.params.userName;
     return (
       <ScrollView
         style={styles.listView}
       >
         {conversation.length > 0 ?
           conversation.map((item, value) => (
-            <View key={Number(value)} style={{ right: item.type === 'user' ? 10 : null, alignSelf: item.type === 'user' ? 'flex-end' : null, left: item.type === 'user' ? null : 10 }}>
-              {ChatBox(item.type, item.message, Number(value))}
+            <View key={Number(value)} style={{ right: item.type === userName ? 10 : null, alignSelf: item.type === userName ? 'flex-end' : null, left: item.type === userName ? null : 10 }}>
+              {ChatBox(item.type, item.message, Number(value), userName)}
             </View>
             ))
             :
@@ -92,7 +92,7 @@ export default function ChatScreen({ route, navigation }) {
                 setText(newtxt);
               }}
             />
-            <TouchableOpacity onPress={() => { addConversation(text, 'user') }}>
+            <TouchableOpacity onPress={() => { addConversation(text, route.params.userName) }}>
               <Text style={styles.send}>Send</Text>
             </TouchableOpacity>
           </View>
