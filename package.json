@@ -17,6 +17,7 @@
     "@react-navigation/stack": "^5.8.0",
     "react": "16.13.1",
     "react-native": "0.63.2",
+    "react-native-autogrow-textinput": "^5.4.0",
     "react-native-gesture-handler": "^1.7.0",
     "react-native-material-textfield": "https://github.com/javarahulsharma/react-native-material-textfield.git",
     "react-native-reanimated": "^1.10.1",
