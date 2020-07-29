@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Button, View, Text, TouchableOpacity } from 'react-native';
+import { Button, View, Text, TouchableOpacity, Alert } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
+import DropdownAlert from 'react-native-dropdownalert';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import {
@@ -8,7 +10,7 @@ import {
     OutlinedTextField,
   } from 'react-native-material-textfield';
 import firebase from '@react-native-firebase/app';
-import database from '@react-native-firebase/database';
+import database from '@react-native-firebase/database';;
 import styles from './styles';
 
 const credentials = {
@@ -25,20 +27,34 @@ const config = {
   name: 'quicha',
 };
 
-function checkFormat(value) {
-    return (value.length > 1 && value.length < 13);
+function checkFormat(value, array) {
+    if (array.includes(value)) return { result: false, message: 'This name already taken' };
+    if (value.length < 3 || value.length > 15) return { result: false, message: 'Please enter the longest 15 shortest 3-character name.' };
+    return { result: true };
 }
 
 export default function HomeScreen({ navigation }) {
     const [users, setUsers] = useState([]);
+    const [definedUser, setDefinedUser] = useState(false);
     const [username, setUsername] = useState('');
 
     const getInfo = async () => {
-        await firebase.initializeApp(credentials, config);
-        firebase.database().ref('/users').once('value')
-        .then(snapshot => {
-          setUsers(snapshot.val().name);
-        });
+        try {
+            await firebase.initializeApp(credentials, config);
+            firebase.database().ref('/users').once('value')
+            .then(snapshot => {
+              setUsers(snapshot.val().name);
+            });
+            const value = await AsyncStorage.getItem('username');
+            if(value !== null) {
+                setUsername(value);
+                setDefinedUser(true);
+            } else {
+                
+            }
+        } catch(e) {
+            // error reading value
+        }
     }
 
     useEffect(() => {getInfo()}, []);
@@ -51,26 +67,53 @@ export default function HomeScreen({ navigation }) {
         .update({
           name: tempArray,
         })
-        .then(() => navigation.navigate("Lobby", {
-            username
-        }));
+        .then(async () => {
+            try {
+                await AsyncStorage.setItem('username', username);
+                navigation.navigate("Lobby", { username });
+            } catch (e) {
+                // saving error
+            }
+        });
     }
 
     return (
         <View style={styles.container}>
-            <View style={styles.middleView}>
-                <OutlinedTextField
-                    style={styles.flexView}
-                    label='Username'
-                    formatText={username}
-                    onChangeText={(value) => setUsername(value)}
-                />
+            {!definedUser ? 
+                <View style={styles.middleView}>
+                    <OutlinedTextField
+                        style={styles.flexView}
+                        label='Username'
+                        formatText={username}
+                        onChangeText={(value) => setUsername(value)}
+                    />
+                    <TouchableOpacity
+                        style={styles.buttonView}
+                        onPress={() => {
+                            const info = checkFormat(username, users);
+                            info.result ? writedb()
+                            : this.dropDownAlertRef.alertWithType('error', "Error", info.message);}}
+                    ><Text style={styles.textView}>Continue</Text>
+                    </TouchableOpacity>
+                </View>  : 
+                <View style={styles.middleView}>
                 <TouchableOpacity
                     style={styles.buttonView}
-                    onPress={() => checkFormat(username) ? writedb() : null}
-                ><Text style={styles.textView}>Continue</Text>
+                    onPress={() => {}}
+                ><Text style={styles.textView}>Continue with {username}</Text>
                 </TouchableOpacity>
-            </View>
+                <Text style={styles.orText}>OR</Text>
+                <TouchableOpacity
+                    style={styles.newButtonView}
+                    onPress={() => { 
+                        setUsername('');
+                        setDefinedUser(false);
+                    }}
+                ><Text style={styles.textView}>Take a new nickname</Text>
+                </TouchableOpacity>
+            </View> }
+                
+            <DropdownAlert ref={ref => this.dropDownAlertRef = ref} />
         </View>
     );
 }
