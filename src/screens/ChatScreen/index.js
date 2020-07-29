@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
+import { View, Text, KeyboardAvoidingView, TouchableOpacity, ScrollView } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AutoGrowingTextInput } from 'react-native-autogrow-textinput';
 import firebase from '@react-native-firebase/app';
 import database from '@react-native-firebase/database';
+import { ChatBox } from '../../components/index';
+import { reverseChat } from '../../lib/index'; 
 import styles from './styles';
 
 export default function ChatScreen({ route, navigation }) {
@@ -18,20 +20,58 @@ export default function ChatScreen({ route, navigation }) {
           console.log('snapshot.val()', snapshot.val());
 
           if (snapshot.val().conversation) { // daha önce yapılmış bir konuşma var
-            setConversation(snapshot.val().conversation);
-          } else { // yeni açılan bir chat
-            
+            setConversation(reverseChat(snapshot.val().conversation));
           }
       });
   }
 
+  const writedb = (chatArray) => {
+    const { roomName, person, userName } = route.params;
+    firebase.database()
+    .ref(`/users/${userName}/${roomName}`)
+    .update({
+      conversation: chatArray,
+    })
+    .then(() => console.log('Data set'));
+  }
+
   useEffect(() => {getInfo()}, []);
+
+  const addConversation = (message, type ) => {
+    let tempArray = [];
+    if (conversation.length > 0) tempArray = reverseChat(conversation);
+    const messageBox = { message, type };
+    tempArray.push(messageBox);
+    setConversation(reverseChat(tempArray));
+    console.log('tempArray', tempArray);
+    console.log('conversation', conversation);
+    writedb(reverseChat(tempArray));
+  }
+
+  const renderList = () =>  {
+    // return (
+    return (
+      <ScrollView
+        style={styles.listView}
+      >
+        {conversation.length > 0 ?
+          conversation.map((item, value) => (
+            <View key={Number(value)} style={{ right: item.type === 'user' ? 10 : null, alignSelf: item.type === 'user' ? 'flex-end' : null, left: item.type === 'user' ? null : 10 }}>
+              {ChatBox(item.type, item.message, Number(value))}
+            </View>
+            ))
+            :
+            null
+        }
+      </ScrollView>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView style={{ flex: 1, backgroundColor: '#eee' }} behavior="padding">
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'position' : null} style={[styles.container, { position: 'absolute' }]}>
-          {/*this.renderList()*/}
+          {renderList()}
           <View style={styles.textBox}>
             <AutoGrowingTextInput
               autoCorrect={false}
@@ -43,7 +83,7 @@ export default function ChatScreen({ route, navigation }) {
                 setText(newtxt);
               }}
             />
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={() => { addConversation(text, 'user') }}>
               <Text style={styles.send}>Send</Text>
             </TouchableOpacity>
           </View>

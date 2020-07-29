@@ -38,6 +38,7 @@ export default function LobbyScreen({ route, navigation }) {
     }
 
     userList = () => {
+        console.log(users);
         return users.map((data) => ContactBox(data, () => {
             writedb(data);
         }));

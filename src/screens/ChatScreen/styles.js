@@ -6,8 +6,6 @@ const screenHeight = Dimensions.get('window').height; //full screen width
 export default StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
     bottom: 0,
   },
   panelContainer: {

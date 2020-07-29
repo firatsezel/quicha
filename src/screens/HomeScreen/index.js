@@ -48,7 +48,7 @@ export default function HomeScreen({ navigation }) {
         tempArray.push(username);
         firebase.database()
         .ref(`/users`)
-        .set({
+        .update({
           name: tempArray,
         })
         .then(() => navigation.navigate("Lobby", {
