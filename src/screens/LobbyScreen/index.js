@@ -49,7 +49,7 @@ export default function LobbyScreen({ route, navigation }) {
         }));
     }
 
-    userList = () => { return users.map((data) => ContactBox(data, () => { roomInfo(data); })); }
+    userList = () => { return users.filter(item => item !== route.params.username).map((data) => ContactBox(data, () => { roomInfo(data); })); }
 
     return (
       <View style={styles.container}>
