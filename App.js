@@ -28,7 +28,7 @@ export default function App() {
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Login" component={HomeScreen} />
         <Stack.Screen name="Chat" component={ChatScreen} />
-        <Stack.Screen name="Lobby" component={LobbyScreen} />
+        <Stack.Screen name="Lobby" component={LobbyScreen} options={{ headerLeft: null }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
