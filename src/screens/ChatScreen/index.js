@@ -12,17 +12,23 @@ import styles from './styles';
 export default function ChatScreen({ route, navigation }) {
   const [text, setText] = useState('');
   const [conversation, setConversation] = useState([]);
+  var interval = null;
 
   const getInfo = async () => {
-      const { roomName, person, userName } = route.params;
-      firebase.database().ref(`/users/${userName}/${roomName}`).once('value')
-      .then(snapshot => {
-          console.log('snapshot.val()', snapshot.val());
-
-          if (snapshot.val().conversation) { // daha önce yapılmış bir konuşma var
-            setConversation(reverseChat(snapshot.val().conversation));
-          }
-      });
+      const { roomName, person, userName, conversation } = route.params;
+      if (conversation.length > 0) {
+        setConversation(reverseChat(conversation));
+      } else {
+        firebase.database().ref(`/users/${userName}/${roomName}`).once('value')
+        .then(snapshot => {
+            console.log('snapshot.val()', snapshot.val());
+  
+            if (snapshot.val().conversation) { // daha önce yapılmış bir konuşma var
+              setConversation(reverseChat(snapshot.val().conversation));
+            }
+        });
+      }
+      
   }
 
   const writedb = (chatArray) => {
@@ -35,9 +41,11 @@ export default function ChatScreen({ route, navigation }) {
     .then(() => console.log('Data set'));
   }
 
-  useEffect(() => {getInfo()}, []);
+  useEffect(() => {interval = setInterval(() => {
+    getInfo();
+   }, 4000);}, []);
 
-  const addConversation = (message, type ) => {
+  const addConversation = (message, type) => {
     let tempArray = [];
     if (conversation.length > 0) tempArray = reverseChat(conversation);
     const messageBox = { message, type };
@@ -46,6 +54,7 @@ export default function ChatScreen({ route, navigation }) {
     console.log('tempArray', tempArray);
     console.log('conversation', conversation);
     writedb(reverseChat(tempArray));
+    setText('');
   }
 
   const renderList = () =>  {

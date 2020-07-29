@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import firebase from '@react-native-firebase/app';
 import database from '@react-native-firebase/database';
 import { ContactBox } from '../../components/index';
+import { getInfoRoom, getInfo } from '../../services/index';
 import styles from './styles';
 
 
@@ -16,6 +17,16 @@ export default function LobbyScreen({ route, navigation }) {
         .then(snapshot => {
             setUsers(snapshot.val().name);
         });
+    }
+
+    function roomInfo(data) {
+        getInfoRoom(data, route.params).then(info => {
+            if (info.result) {
+                navigation.navigate('Chat', {
+                    ...info.params,
+                });
+            } else { writedb(data); } 
+        })
     }
 
     useEffect(() => {getInfo()}, []);
@@ -34,15 +45,11 @@ export default function LobbyScreen({ route, navigation }) {
             roomName,
             person,
             userName,
+            conversation: [],
         }));
     }
 
-    userList = () => {
-        console.log(users);
-        return users.map((data) => ContactBox(data, () => {
-            writedb(data);
-        }));
-    }
+    userList = () => { return users.map((data) => ContactBox(data, () => { roomInfo(data); })); }
 
     return (
       <View style={styles.container}>
