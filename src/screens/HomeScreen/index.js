@@ -99,7 +99,7 @@ export default function HomeScreen({ navigation }) {
                 <View style={styles.middleView}>
                 <TouchableOpacity
                     style={styles.buttonView}
-                    onPress={() => {}}
+                    onPress={() => navigation.navigate("Lobby", { username })}
                 ><Text style={styles.textView}>Continue with {username}</Text>
                 </TouchableOpacity>
                 <Text style={styles.orText}>OR</Text>

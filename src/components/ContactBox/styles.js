@@ -26,7 +26,7 @@ const styles = {
     width: 40,
     height: 40,
     borderRadius: 4600 / 2,
-    backgroundColor: 'blue',
+    backgroundColor: '#367f8f',
   },
   circleText: {
     fontSize: 20,

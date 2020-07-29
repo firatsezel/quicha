@@ -5,7 +5,7 @@ import styles from './styles';
 export default function ChatBox(type, message, key, userName) {
     if (type === userName) {
         return (
-          <View key={key} style={[styles.container, { borderColor: '#6E48AA', backgroundColor: '#6E48AA', borderTopLeftRadius: 16, borderBottomLeftRadius: 16 }]}>
+          <View key={key} style={[styles.container, { borderColor: '#367f8f', backgroundColor: '#367f8f', borderTopLeftRadius: 16, borderBottomLeftRadius: 16 }]}>
             <View>
               <Text
                 multiline

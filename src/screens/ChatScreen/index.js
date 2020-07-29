@@ -78,7 +78,7 @@ export default function ChatScreen({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <KeyboardAvoidingView style={{ flex: 1, backgroundColor: '#eee' }} behavior="padding">
+      <KeyboardAvoidingView style={styles.panelContainer} behavior="padding">
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'position' : null} style={[styles.container, { position: 'absolute' }]}>
           {renderList()}
           <View style={styles.textBox}>
