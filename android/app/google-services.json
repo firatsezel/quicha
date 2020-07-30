@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "708721798217",
+    "firebase_url": "https://quicha-25dc8.firebaseio.com",
+    "project_id": "quicha-25dc8",
+    "storage_bucket": "quicha-25dc8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:708721798217:android:1c05b2f1c37de891826398",
+        "android_client_info": {
+          "package_name": "com.quicha"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "708721798217-ss5dbnl0aap5t8p2brajvi06fs4e4ffg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDunIXUzyLWqNel5H5beGm_4yhpoPmUpBA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "708721798217-ss5dbnl0aap5t8p2brajvi06fs4e4ffg.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "708721798217-q21i9fuonigsimj0jipe7noof9qmpdov.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.example.quicha"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
