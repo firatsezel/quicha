@@ -4,10 +4,10 @@
 
 build and test in,
 
-react-native -v 0.63.2
-npm -v 6.4.1
-node -v 10.15.0
-yarn 1.5.1
+-react-native 0.63.2
+-npm 6.4.1
+-node 10.15.0
+-yarn 1.5.1
 
 
 ## Getting started (For Mac Users)
