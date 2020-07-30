@@ -10,13 +10,13 @@ export default async function getInfoRoom(data, params) {
     .then(snapshot => {
         if (snapshot.val()) {
             isDataFound = true;
-            navParams = { roomName, person: data, userName, conversation: snapshot.val().conversation };
+            navParams = { roomName, person: data, userName, conversation: snapshot.val().conversation ? snapshot.val().conversation : [] };
         } else {
             firebase.database().ref(`/users/${userName}/${roomNameReverse}`).once('value')
             .then(snapshotRev => {
                 if (snapshotRev.val()) {
                     isDataFound = true;
-                    navParams = { roomName, person: data, userName, conversation: snapshot.val().conversation };
+                    navParams = { roomName, person: data, userName, conversation: snapshotRev.val().conversation ? snapshotRev.val().conversation : [] };
                 }
             });
         }

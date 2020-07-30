@@ -19,8 +19,6 @@ export default function ChatScreen({ route, navigation }) {
       const { roomName, person, userName } = route.params;
       firebase.database().ref(`/users/${userName}/${roomName}`).once('value')
       .then(snapshot => {
-          console.log('snapshot.val()', snapshot.val());
-
           if (snapshot.val().conversation) { // daha önce yapılmış bir konuşma var
             setConversation((snapshot.val().conversation));
           }
@@ -34,7 +32,7 @@ export default function ChatScreen({ route, navigation }) {
     .update({
       conversation: chatArray,
     })
-    .then(() => console.log('Data set'));
+    .then(() => setText(''));
   }
 
   useEffect(() => {
@@ -46,7 +44,6 @@ export default function ChatScreen({ route, navigation }) {
   }, []);
 
   const addConversation = (message, type, location) => {
-    console.log(message)
     if (message.length > 0) {
       let tempArray = [];
       if (conversation.length > 0) tempArray = reverseChat(conversation);
@@ -54,7 +51,6 @@ export default function ChatScreen({ route, navigation }) {
       tempArray.push(messageBox);
       setConversation(reverseChat(tempArray));
       writedb(reverseChat(tempArray));
-      setText('');
     }
   }
 

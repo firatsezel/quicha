@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, View, Text, TouchableOpacity, Alert } from 'react-native';
+import { Button, View, Text, TouchableOpacity, Alert, Platform, BackHandler } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import DropdownAlert from 'react-native-dropdownalert';
 import { NavigationContainer } from '@react-navigation/native';
@@ -13,10 +13,20 @@ import firebase from '@react-native-firebase/app';
 import database from '@react-native-firebase/database';;
 import styles from './styles';
 
-const credentials = {
+const credentialsIOS = {
     clientId: '708721798217-q21i9fuonigsimj0jipe7noof9qmpdov.apps.googleusercontent.com',
     appId: '1:708721798217:ios:0ac6e691eb7c4f6e82639',
     apiKey: 'AIzaSyCitQXz93CbQRJzvqKHnfkPtpXufJFM7TY',
+    databaseURL: 'https://quicha-25dc8.firebaseio.com',
+    storageBucket: 'quicha-25dc8.appspot.com',
+    messagingSenderId: '708721798217',
+    projectId: 'quicha-25dc8',
+};
+
+const credentialsAndroid = {
+    clientId: '708721798217-ss5dbnl0aap5t8p2brajvi06fs4e4ffg.apps.googleusercontent.com',
+    appId: '1:708721798217:android:1c05b2f1c37de891826398',
+    apiKey: 'AIzaSyDunIXUzyLWqNel5H5beGm_4yhpoPmUpBA',
     databaseURL: 'https://quicha-25dc8.firebaseio.com',
     storageBucket: 'quicha-25dc8.appspot.com',
     messagingSenderId: '708721798217',
@@ -40,7 +50,9 @@ export default function HomeScreen({ navigation }) {
 
     const getInfo = async () => {
         try {
-            await firebase.initializeApp(credentials, config);
+            if (!firebase.apps.length) {
+                await firebase.initializeApp(Platform.OS === 'android' ? credentialsAndroid : credentialsIOS, config);
+            }
             firebase.database().ref('/users').once('value')
             .then(snapshot => {
               setUsers(snapshot.val().name);
@@ -57,7 +69,13 @@ export default function HomeScreen({ navigation }) {
         }
     }
 
-    useEffect(() => {getInfo()}, []);
+    function handleBackButton() { return true; }
+
+    useEffect(() => {
+        BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+        getInfo();
+        return () => { BackHandler.removeEventListener('hardwareBackPress', handleBackButton); }
+    }, []);
 
     const writedb = () => {
         let tempArray = users;

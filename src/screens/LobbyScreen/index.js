@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Button } from 'react-native';
+import { View, Text, TouchableOpacity, Button, BackHandler } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import firebase from '@react-native-firebase/app';
@@ -29,7 +29,13 @@ export default function LobbyScreen({ route, navigation }) {
         })
     }
 
-    useEffect(() => {getInfo()}, []);
+    function handleBackButton() { return true; }
+    
+    useEffect(() => {
+        BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+        getInfo();
+        return () => { BackHandler.removeEventListener('hardwareBackPress', handleBackButton); }
+    }, []);
 
     const writedb = (person) => {
         let tempArray = [];
